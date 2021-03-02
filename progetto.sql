@@ -1,15 +1,8 @@
-/* 
-Fabrizio Fagiolo
-Matricola 310818
-Progetto    0010
-*/
-
-/*Esercizio1*/ 
---Punto 1
+--cancellare schemi e tabelle omonime eventualmente presenti nella base di dati.
 DROP SCHEMA IF EXISTS voli CASCADE;
 CREATE SCHEMA voli;
 SET search_path TO voli;
---Punto 2 
+--La seconda per generare lo schema definendo vincoli opportuni.
 CREATE TABLE nazione(
     nome VARCHAR(33) PRIMARY KEY,
     compagnia_bandiera VARCHAR(33) NOT NULL,
@@ -46,8 +39,6 @@ CREATE TABLE compagnie(
     num_voli INTEGER DEFAULT 0
 );
 
-
-/*Esercizio 3*/
 
 /*Ho creato 2 trigger uno aggiungi ed uno elimina per aggiornare la colonna n_voli della tabella compagnie 
 ogni qual volta viene inserito o cancellato un volo.
@@ -87,9 +78,6 @@ BEFORE DELETE
 ON  volo
 FOR EACH ROW 
 EXECUTE PROCEDURE elimina(); 
-
-/*Esericizio 1*/
---Punto 3
 
 /*In questo punto avrei potuto anche popolare il DB con un file esterno ed 
 importando i valori da esso ma dovendo inserire poche tuple per relazione ho preferito inserire i valori manualmente.*/
@@ -152,12 +140,11 @@ SELECT * FROM compagnie;
 DELETE FROM compagnie WHERE num_voli = 0;
 SELECT * FROM compagnie;
 
---Esercizio 2 
---1 Query
+--Determinare i voli che arrivano in un aeroporto situato a Perugia oppure partono da un aereoporto di Roma.
 SELECT v.* FROM aeroporto AS a JOIN volo AS v ON v.aeroporto_arrivo = a.codice AND a.citta='Perugia' OR v.aeroporto_partenza = a.codice AND a.citta = 'Roma';
---2 Query 
+--2 Determinare i voli che non sorvolano alcuna citta’ italiana.
 SELECT v.* FROM sorvolo AS s JOIN citta AS c ON s.citta = c.nome JOIN volo AS v ON v.codice = s.codice  WHERE NOT nazione='Italia';
---3 Query 
+--3 Determinare le compagnie aeree che hanno un volo in partenza da ogni aereoporto memorizzato nella BD.
 SELECT compagnia FROM volo GROUP BY compagnia HAVING (COUNT(DISTINCT aeroporto_partenza)) = (SELECT(COUNT(aeroporto.codice))FROM aeroporto);
 
 
